@@ -2,7 +2,18 @@ import { useState } from "react";
 import { useRegistration } from "@/contexts/RegistrationContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  AlertCircle,
+  Send,
+  Timer,
+  KeyRound,
+  Eye,
+  EyeOff,
+  Loader2,
+} from "lucide-react";
 import { userRegistrationSchema } from "@/schemas/registration";
 
 import {
@@ -20,9 +31,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FcGoogle } from "react-icons/fc";
 import { PasswordRequirements } from "../../auth/PasswordRequirements";
 
@@ -183,7 +199,10 @@ export function UserRegistrationStep() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Name
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter your name"
@@ -201,7 +220,10 @@ export function UserRegistrationStep() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      Email
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Enter your email"
@@ -220,7 +242,10 @@ export function UserRegistrationStep() {
                 name="password"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="flex items-center gap-2">
+                      <Lock className="h-4 w-4" />
+                      Password
+                    </FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
@@ -248,41 +273,74 @@ export function UserRegistrationStep() {
               />
 
               {verificationSent && (
-                <div className="space-y-4">
-                  <Alert>
-                    <AlertDescription>
-                      We've sent a verification code to{" "}
-                      {form.getValues("email")}
-                    </AlertDescription>
+                <div className="space-y-6">
+                  <Alert
+                    variant="default"
+                    className="border-primary/50 bg-primary/5"
+                  >
+                    <AlertCircle className="h-5 w-5 text-primary" />
+                    <div className="ml-3">
+                      <AlertTitle className="text-primary font-medium">
+                        Verification Required
+                      </AlertTitle>
+                      <AlertDescription className="mt-1">
+                        We've sent a verification code to{" "}
+                        <span className="font-medium">
+                          {form.getValues("email")}
+                        </span>
+                      </AlertDescription>
+                    </div>
                   </Alert>
 
                   <FormField
                     control={form.control}
                     name="verificationCode"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Verification Code</FormLabel>
+                      <FormItem className="space-y-4">
+                        <FormLabel className="flex items-center gap-2">
+                          <KeyRound className="h-4 w-4" />
+                          Verification Code
+                        </FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Enter 6-digit code"
-                            {...field}
-                            disabled={isSubmitting}
-                          />
+                          <div className="flex flex-col items-center space-y-4">
+                            <InputOTP
+                              maxLength={6}
+                              value={field.value}
+                              onChange={field.onChange}
+                              disabled={isSubmitting}
+                            >
+                              <InputOTPGroup>
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
+                              </InputOTPGroup>
+                            </InputOTP>
+
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Timer className="h-4 w-4 flex-shrink-0" />
+                              <span>Didn't receive the code?</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={handleResendCode}
+                                disabled={isResendingCode || isSubmitting}
+                                className="px-2 text-primary hover:text-primary/90 flex items-center gap-1 h-8"
+                              >
+                                {isResendingCode ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Send className="h-4 w-4" />
+                                )}
+                                Resend code
+                              </Button>
+                            </div>
+                          </div>
                         </FormControl>
                         <FormMessage />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleResendCode}
-                          disabled={isResendingCode || isSubmitting}
-                          className="px-0 text-primary hover:text-primary/90"
-                        >
-                          {isResendingCode && (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          )}
-                          Resend code
-                        </Button>
                       </FormItem>
                     )}
                   />

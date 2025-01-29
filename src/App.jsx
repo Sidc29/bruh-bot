@@ -1,11 +1,7 @@
-import { Button } from "@/components/ui/button";
+import RegisterPage from "./pages/main/Registration";
 
 function App() {
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <Button>Hello World</Button>
-    </div>
-  );
+  return <RegisterPage />;
 }
 
 export default App;

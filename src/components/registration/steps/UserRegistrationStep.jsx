@@ -135,7 +135,7 @@ export function UserRegistrationStep() {
   };
 
   return (
-    <Card className="border-2 border-border/50 shadow-lg">
+    <Card className="shadow-lg">
       <CardHeader className="text-center space-y-3">
         <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
           Create your account

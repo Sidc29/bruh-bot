@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useRegistration } from "@/contexts/RegistrationContext";
+import { useRegistration } from "../../../../contexts/RegistrationProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -14,7 +14,7 @@ import {
   EyeOff,
   Loader2,
 } from "lucide-react";
-import { userRegistrationSchema } from "@/schemas/registration";
+import { userRegistrationSchema } from "../../../../schemas/userRegistration";
 
 import {
   Form,
@@ -40,9 +40,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FcGoogle } from "react-icons/fc";
-import { PasswordRequirements } from "../../auth/PasswordRequirements";
+import { PasswordRequirements } from "../../../auth/PasswordRequirements";
 
-export function UserRegistrationStep() {
+export function UserRegistration() {
   const { dispatch } = useRegistration();
   const [verificationSent, setVerificationSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

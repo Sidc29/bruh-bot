@@ -1,8 +1,8 @@
-import { useRegistration } from "../../contexts/RegistrationContext";
+import { useRegistration } from "../../contexts/RegistrationProvider";
 import { StepIndicator } from "../StepIndicator";
-import { UserRegistrationStep } from "./steps/UserRegistrationStep";
+import { UserRegistration } from "./steps/UserRegistration/UserRegistration";
+import { OrganizationSetup } from "./steps/Organization/OrganizationSetup";
 // TODO: Implement the following steps
-// import { OrganizationSetupStep } from "./steps/OrganizationSetupStep";
 // import { ChatbotIntegrationStep } from "./steps/ChatbotIntegrationStep";
 
 const STEPS = [
@@ -18,10 +18,10 @@ export function RegistrationFlow() {
     <div className="mx-auto max-w-2xl">
       <StepIndicator currentStep={state.currentStep} steps={STEPS} />
       <div className="space-y-8">
-        {state.currentStep === 1 && <UserRegistrationStep />}
+        {state.currentStep === 1 && <UserRegistration />}
+        {state.currentStep === 2 && <OrganizationSetup />}
         {/* TODO: Implement the following steps */}
-        {/* {state.currentStep === 2 && <OrganizationSetupStep />}
-        {state.currentStep === 3 && <ChatbotIntegrationStep />} */}
+        {/* {state.currentStep === 3 && <ChatbotIntegrationStep />} */}
       </div>
     </div>
   );

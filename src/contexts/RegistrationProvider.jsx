@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer } from "react";
 import { registrationReducer } from "../reducers/registrationReducer";
 
 const initialState = {
-  currentStep: 1,
+  currentStep: 2,
   userData: {
     name: "",
     email: "",

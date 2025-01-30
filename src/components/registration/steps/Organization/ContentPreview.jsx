@@ -56,7 +56,7 @@ export const ContentPreview = ({ chunks }) => {
                       dangerouslySetInnerHTML={{ __html: chunk }}
                     />
                   ) : (
-                    <pre className="text-xs bg-slate-800 p-2 rounded overflow-x-auto whitespace-pre-wrap break-words">
+                    <pre className="text-xs bg-slate-800 text-white p-2 rounded overflow-x-auto whitespace-pre-wrap break-words">
                       {chunk}
                     </pre>
                   )}

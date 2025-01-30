@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { origanizationDetailsSchema } from "../schemas/organizationDetails";
@@ -38,14 +38,6 @@ export const useOrganizationSetup = () => {
       description: state.organizationData.description,
     },
   });
-
-  const formHasChanged = useMemo(() => {
-    return (
-      form.getValues("companyName") !== state.organizationData.companyName ||
-      form.getValues("websiteUrl") !== state.organizationData.websiteUrl ||
-      form.getValues("description") !== state.organizationData.description
-    );
-  }, [form.watch(), state.organizationData]);
 
   const simulatePageScan = () => {
     const pages = [...pagesData];
@@ -112,7 +104,6 @@ export const useOrganizationSetup = () => {
     resetDialog,
     isComplete,
     completedPages,
-    formHasChanged,
     fetchMetaDescription,
     onSubmit,
     resetTraining,

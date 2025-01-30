@@ -43,7 +43,6 @@ export const OrganizationSetup = () => {
     resetDialog,
     isComplete,
     completedPages,
-    formHasChanged,
     fetchMetaDescription,
     onSubmit,
     resetTraining,
@@ -172,22 +171,13 @@ export const OrganizationSetup = () => {
                   <Button
                     type="button"
                     onClick={() => dispatch({ type: "SET_STEP", payload: 3 })}
-                    disabled={scanningState === "scanning" || formHasChanged}
+                    disabled={scanningState === "scanning"}
                     className="flex items-center gap-2"
                   >
                     Continue Setup <ChevronRight className="h-4 w-4" />
                   </Button>
                 )}
               </div>
-
-              {formHasChanged && scanningState === "completed" && (
-                <div className="flex items-center gap-2 p-3 text-sm bg-warning/10 border-warning/20 border rounded-lg">
-                  <AlertTriangle className="h-4 w-4 text-warning" />
-                  <span className="text-warning-foreground">
-                    Form data has changed. Please reset and retrain to continue.
-                  </span>
-                </div>
-              )}
             </form>
           </Form>
         </CardContent>

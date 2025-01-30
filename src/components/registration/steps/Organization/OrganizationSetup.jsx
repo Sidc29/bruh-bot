@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import {
   Globe,
   FileText,
@@ -278,7 +279,10 @@ export const OrganizationSetup = () => {
           <div className="flex items-center gap-2">
             <Globe className="h-5 w-5" />
             <span className="font-medium">
-              Content from {selectedPage?.url}
+              Scanned data from{" "}
+              <Badge variant="secondary" className="text-sm">
+                {selectedPage?.url}
+              </Badge>
             </span>
           </div>
         }

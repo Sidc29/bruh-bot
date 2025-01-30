@@ -48,6 +48,7 @@ export const OrganizationSetup = () => {
     onSubmit,
     resetTraining,
     setSelectedPage,
+    dispatch,
   } = useOrganizationSetup();
   return (
     <>

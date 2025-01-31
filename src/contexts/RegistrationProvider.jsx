@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer } from "react";
 import { registrationReducer } from "../reducers/registrationReducer";
 
 const initialState = {
-  currentStep: 1,
+  currentStep: 3,
   userData: {
     name: "",
     email: "",
@@ -10,14 +10,31 @@ const initialState = {
     isEmailVerified: false,
   },
   organizationData: {
-    companyName: "",
-    websiteUrl: "",
-    description: "",
+    companyName: "Test",
+    websiteUrl: "http://test.com",
+    description: "test",
     scrapedPages: [],
+    trainingState: {
+      currentPhase: "not_started", // not_started, scanning, processing, training, completed
+      scanProgress: 0,
+      scannedPages: [],
+      completedPages: [],
+      detectedPages: 0,
+      isComplete: false,
+    },
   },
   chatbotData: {
+    widgetId: null,
     isIntegrated: false,
     isTestingComplete: false,
+    integrationMethod: null,
+    integrationCode: null,
+    emailSent: false,
+    testingMethod: null,
+    confettiShown: false,
+    adminPanelViewed: false,
+    chatbotTested: false,
+    socialShareClicked: false,
   },
 };
 

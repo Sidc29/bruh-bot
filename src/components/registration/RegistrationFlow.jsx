@@ -1,9 +1,8 @@
 import { useRegistration } from "../../contexts/RegistrationProvider";
-import { StepIndicator } from "../StepIndicator";
+import { StepIndicator } from "./StepIndicator";
 import { UserRegistration } from "./steps/UserRegistration/UserRegistration";
 import { OrganizationSetup } from "./steps/Organization/OrganizationSetup";
-// TODO: Implement the following steps
-// import { ChatbotIntegrationStep } from "./steps/ChatbotIntegrationStep";
+import { ChatbotIntegration } from "./steps/ChatbotIntegration/ChatbotIntegration";
 
 const STEPS = [
   { number: 1, title: "Account Setup" },
@@ -20,8 +19,7 @@ export function RegistrationFlow() {
       <div className="space-y-8">
         {state.currentStep === 1 && <UserRegistration />}
         {state.currentStep === 2 && <OrganizationSetup />}
-        {/* TODO: Implement the following steps */}
-        {/* {state.currentStep === 3 && <ChatbotIntegrationStep />} */}
+        {state.currentStep === 3 && <ChatbotIntegration />}
       </div>
     </div>
   );

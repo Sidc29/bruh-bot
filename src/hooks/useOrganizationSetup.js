@@ -6,49 +6,60 @@ import { useRegistration } from "../contexts/RegistrationProvider";
 import pagesData from "../data/pagesData";
 import useDialog from "./useDialog";
 
-export const useOrganizationSetup = () => {
+export function useOrganizationSetup() {
   const { state, dispatch } = useRegistration();
+  const { trainingState } = state.organizationData;
+
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
-  const [scanProgress, setScanProgress] = useState(0);
   const [selectedPage, setSelectedPage] = useState(null);
-  const [scannedPages, setScannedPages] = useState([]);
-  const [currentPhase, setCurrentPhase] = useState("not_started"); // not_started, scanning, processing, training, completed
-  const [detectedPages, setDetectedPages] = useState([]);
 
   const contentDialog = useDialog();
   const resetDialog = useDialog();
 
-  const completedPages = scannedPages.filter(
+  const completedPages = trainingState.scannedPages.filter(
     (p) => p.status === "completed"
   ).length;
-  const isComplete = currentPhase === "completed";
 
   const resetTraining = () => {
-    setScanProgress(0);
-    setScannedPages([]);
-    setDetectedPages([]);
-    setCurrentPhase("not_started");
+    dispatch({
+      type: "RESET_TRAINING",
+    });
     resetDialog.closeDialog();
   };
 
   // Phase 1: Website Scanning
   const simulateWebsiteScan = () => {
-    setCurrentPhase("scanning");
-    setScanProgress(0);
+    dispatch({
+      type: "UPDATE_TRAINING_STATE",
+      payload: {
+        currentPhase: "scanning",
+        scanProgress: 0,
+      },
+    });
 
     const pages = [...pagesData];
     let progress = 0;
 
     const interval = setInterval(() => {
       progress += 5;
-      setScanProgress(Math.min(progress, 33));
-      const pagesDetected = Math.floor((progress / 100) * pages.length);
-      setDetectedPages(pages.slice(0, pagesDetected));
+      dispatch({
+        type: "UPDATE_TRAINING_STATE",
+        payload: {
+          scanProgress: Math.min(progress, 33),
+          detectedPages: pages.slice(
+            0,
+            Math.floor((progress / 100) * pages.length)
+          ),
+        },
+      });
 
       if (progress >= 100) {
         clearInterval(interval);
-        setDetectedPages(pages);
+        dispatch({
+          type: "UPDATE_TRAINING_STATE",
+          payload: { detectedPages: pages },
+        });
         setTimeout(() => simulateContentProcessing(pages), 500);
       }
     }, 200);
@@ -56,20 +67,31 @@ export const useOrganizationSetup = () => {
 
   // Phase 2: Content Processing
   const simulateContentProcessing = (pages) => {
-    setCurrentPhase("processing");
-    setScannedPages(pages.map((page) => ({ ...page, status: "pending" })));
-    setScanProgress(33);
+    const initialPages = pages.map((page) => ({ ...page, status: "pending" }));
+
+    dispatch({
+      type: "UPDATE_TRAINING_STATE",
+      payload: {
+        currentPhase: "processing",
+        scannedPages: initialPages,
+        scanProgress: 33,
+      },
+    });
 
     let processed = 0;
     const processInterval = setInterval(() => {
       if (processed < pages.length) {
-        setScannedPages((prev) =>
-          prev.map((p, i) =>
-            i === processed ? { ...p, status: "completed" } : p
-          )
-        );
+        const updatedPages = [...initialPages];
+        updatedPages[processed].status = "completed";
+
+        dispatch({
+          type: "UPDATE_TRAINING_STATE",
+          payload: {
+            scannedPages: updatedPages,
+            scanProgress: 33 + (processed / pages.length) * 33,
+          },
+        });
         processed++;
-        setScanProgress(33 + Math.floor((processed / pages.length) * 33));
       } else {
         clearInterval(processInterval);
         setTimeout(() => simulateAITraining(), 500);
@@ -79,8 +101,13 @@ export const useOrganizationSetup = () => {
 
   // Phase 3: AI Model Training
   const simulateAITraining = () => {
-    setCurrentPhase("training");
-    setScanProgress(66);
+    dispatch({
+      type: "UPDATE_TRAINING_STATE",
+      payload: {
+        currentPhase: "training",
+        scanProgress: 66,
+      },
+    });
 
     const trainingSteps = [
       "Initializing model parameters",
@@ -94,11 +121,21 @@ export const useOrganizationSetup = () => {
     const trainingInterval = setInterval(() => {
       if (step < trainingSteps.length) {
         step++;
-        setScanProgress(66 + Math.floor((step / trainingSteps.length) * 34));
+        dispatch({
+          type: "UPDATE_TRAINING_STATE",
+          payload: {
+            scanProgress: 66 + Math.floor((step / trainingSteps.length) * 34),
+          },
+        });
       } else {
         clearInterval(trainingInterval);
-        setCurrentPhase("completed");
-        setScanProgress(100);
+        dispatch({
+          type: "UPDATE_TRAINING_STATE",
+          payload: {
+            currentPhase: "completed",
+            scanProgress: 100,
+          },
+        });
       }
     }, 1500);
   };
@@ -131,23 +168,22 @@ export const useOrganizationSetup = () => {
   };
 
   return {
-    state,
-    dispatch,
     form,
     isLoading,
     isFetchingMeta,
-    scanProgress,
-    scannedPages,
+    scanProgress: trainingState.scanProgress,
+    scannedPages: trainingState.scannedPages,
     selectedPage,
     contentDialog,
     resetDialog,
-    isComplete,
+    isComplete: trainingState.currentPhase === "completed",
     completedPages,
-    currentPhase,
-    detectedPages,
+    currentPhase: trainingState.currentPhase,
+    detectedPages: trainingState.detectedPages,
     fetchMetaDescription,
     onSubmit,
     resetTraining,
     setSelectedPage,
+    dispatch,
   };
-};
+}

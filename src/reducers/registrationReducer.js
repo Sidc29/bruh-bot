@@ -9,10 +9,38 @@ export function registrationReducer(state, action) {
         ...state,
         organizationData: { ...state.organizationData, ...action.payload },
       };
+    case "UPDATE_TRAINING_STATE":
+      return {
+        ...state,
+        organizationData: {
+          ...state.organizationData,
+          trainingState: {
+            ...state.organizationData.trainingState,
+            ...(typeof action.payload === "function"
+              ? action.payload(state.organizationData.trainingState)
+              : action.payload),
+          },
+        },
+      };
     case "UPDATE_CHATBOT_DATA":
       return {
         ...state,
         chatbotData: { ...state.chatbotData, ...action.payload },
+      };
+    case "RESET_TRAINING":
+      return {
+        ...state,
+        organizationData: {
+          ...state.organizationData,
+          trainingState: {
+            currentPhase: "not_started",
+            scanProgress: 0,
+            scannedPages: [],
+            completedPages: [],
+            detectedPages: 0,
+            isComplete: false,
+          },
+        },
       };
     default:
       return state;

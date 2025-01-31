@@ -174,7 +174,7 @@ export const OrganizationSetup = () => {
                   <Button
                     type="button"
                     onClick={() => dispatch({ type: "SET_STEP", payload: 3 })}
-                    disabled={currentPhase !== "completed"}
+                    // disabled={currentPhase !== "completed"}
                     className="flex items-center gap-2"
                   >
                     Continue Setup <ChevronRight className="h-4 w-4" />

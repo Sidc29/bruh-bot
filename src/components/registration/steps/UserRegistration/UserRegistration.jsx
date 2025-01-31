@@ -12,7 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { FcGoogle } from "react-icons/fc";
 import { useRegistrationForm } from "../../../../hooks/useRegistrationForm";
-import { NameField, EmailField, PasswordField } from "./InputFields";
+import {
+  NameField,
+  EmailField,
+  PasswordField,
+  VerificationCodeField,
+} from "./InputFields";
 
 export function UserRegistration() {
   const {

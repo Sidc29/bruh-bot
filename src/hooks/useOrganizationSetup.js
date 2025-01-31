@@ -10,10 +10,11 @@ export const useOrganizationSetup = () => {
   const { state, dispatch } = useRegistration();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
-  const [scanningState, setScanningState] = useState("not_started");
   const [scanProgress, setScanProgress] = useState(0);
   const [selectedPage, setSelectedPage] = useState(null);
   const [scannedPages, setScannedPages] = useState([]);
+  const [currentPhase, setCurrentPhase] = useState("not_started"); // not_started, scanning, processing, training, completed
+  const [detectedPages, setDetectedPages] = useState([]);
 
   const contentDialog = useDialog();
   const resetDialog = useDialog();
@@ -21,55 +22,85 @@ export const useOrganizationSetup = () => {
   const completedPages = scannedPages.filter(
     (p) => p.status === "completed"
   ).length;
-  const isComplete = completedPages === scannedPages.length;
+  const isComplete = currentPhase === "completed";
 
   const resetTraining = () => {
-    setScanningState("not_started");
     setScanProgress(0);
     setScannedPages([]);
+    setDetectedPages([]);
+    setCurrentPhase("not_started");
     resetDialog.closeDialog();
   };
 
-  const form = useForm({
-    resolver: zodResolver(origanizationDetailsSchema),
-    defaultValues: {
-      companyName: state.organizationData.companyName,
-      websiteUrl: state.organizationData.websiteUrl,
-      description: state.organizationData.description,
-    },
-  });
-
-  const simulatePageScan = () => {
-    const pages = [...pagesData];
-
-    setScannedPages(pages);
-    setScanningState("scanning");
+  // Phase 1: Website Scanning
+  const simulateWebsiteScan = () => {
+    setCurrentPhase("scanning");
     setScanProgress(0);
 
-    const totalSteps = 100;
+    const pages = [...pagesData];
+    let progress = 0;
+
     const interval = setInterval(() => {
-      setScanProgress((prev) => {
-        if (prev >= totalSteps) {
-          clearInterval(interval);
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 50);
+      progress += 5;
+      setScanProgress(Math.min(progress, 33));
+      const pagesDetected = Math.floor((progress / 100) * pages.length);
+      setDetectedPages(pages.slice(0, pagesDetected));
 
-    pages.forEach((_, index) => {
-      setTimeout(() => {
+      if (progress >= 100) {
+        clearInterval(interval);
+        setDetectedPages(pages);
+        setTimeout(() => simulateContentProcessing(pages), 500);
+      }
+    }, 200);
+  };
+
+  // Phase 2: Content Processing
+  const simulateContentProcessing = (pages) => {
+    setCurrentPhase("processing");
+    setScannedPages(pages.map((page) => ({ ...page, status: "pending" })));
+    setScanProgress(33);
+
+    let processed = 0;
+    const processInterval = setInterval(() => {
+      if (processed < pages.length) {
         setScannedPages((prev) =>
-          prev.map((p, i) => (i === index ? { ...p, status: "completed" } : p))
+          prev.map((p, i) =>
+            i === processed ? { ...p, status: "completed" } : p
+          )
         );
-      }, (index + 1) * 2000);
-    });
+        processed++;
+        setScanProgress(33 + Math.floor((processed / pages.length) * 33));
+      } else {
+        clearInterval(processInterval);
+        setTimeout(() => simulateAITraining(), 500);
+      }
+    }, 2000);
+  };
 
-    setTimeout(() => {
-      setScanningState("completed");
-      clearInterval(interval);
-      setScanProgress(100);
-    }, 8000);
+  // Phase 3: AI Model Training
+  const simulateAITraining = () => {
+    setCurrentPhase("training");
+    setScanProgress(66);
+
+    const trainingSteps = [
+      "Initializing model parameters",
+      "Training on processed content",
+      "Fine-tuning responses",
+      "Optimizing performance",
+      "Validating model accuracy",
+    ];
+
+    let step = 0;
+    const trainingInterval = setInterval(() => {
+      if (step < trainingSteps.length) {
+        step++;
+        setScanProgress(66 + Math.floor((step / trainingSteps.length) * 34));
+      } else {
+        clearInterval(trainingInterval);
+        setCurrentPhase("completed");
+        setScanProgress(100);
+      }
+    }, 1500);
   };
 
   const fetchMetaDescription = async () => {
@@ -83,11 +114,20 @@ export const useOrganizationSetup = () => {
     }, 1500);
   };
 
+  const form = useForm({
+    resolver: zodResolver(origanizationDetailsSchema),
+    defaultValues: {
+      companyName: state.organizationData.companyName,
+      websiteUrl: state.organizationData.websiteUrl,
+      description: state.organizationData.description,
+    },
+  });
+
   const onSubmit = (data) => {
     setIsLoading(true);
     dispatch({ type: "UPDATE_ORGANIZATION_DATA", payload: data });
     setIsLoading(false);
-    simulatePageScan();
+    simulateWebsiteScan();
   };
 
   return {
@@ -96,7 +136,6 @@ export const useOrganizationSetup = () => {
     form,
     isLoading,
     isFetchingMeta,
-    scanningState,
     scanProgress,
     scannedPages,
     selectedPage,
@@ -104,6 +143,8 @@ export const useOrganizationSetup = () => {
     resetDialog,
     isComplete,
     completedPages,
+    currentPhase,
+    detectedPages,
     fetchMetaDescription,
     onSubmit,
     resetTraining,

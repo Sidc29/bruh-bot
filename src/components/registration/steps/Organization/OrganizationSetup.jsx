@@ -16,7 +16,6 @@ import {
   ChevronLeft,
   ChevronRight,
   RotateCcw,
-  AlertTriangle,
   TrendingUp,
 } from "lucide-react";
 import { useOrganizationSetup } from "../../../../hooks/useOrganizationSetup";
@@ -35,7 +34,6 @@ export const OrganizationSetup = () => {
     form,
     isLoading,
     isFetchingMeta,
-    scanningState,
     scanProgress,
     scannedPages,
     selectedPage,
@@ -43,6 +41,8 @@ export const OrganizationSetup = () => {
     resetDialog,
     isComplete,
     completedPages,
+    currentPhase,
+    detectedPages,
     fetchMetaDescription,
     onSubmit,
     resetTraining,
@@ -68,7 +68,7 @@ export const OrganizationSetup = () => {
                 <CompanyNameField
                   control={form.control}
                   isLoading={isLoading}
-                  scanningState={scanningState}
+                  currentPhase={currentPhase !== "not_started"}
                 />
 
                 {/* Company URL Field */}
@@ -76,7 +76,7 @@ export const OrganizationSetup = () => {
                   control={form.control}
                   isLoading={isLoading}
                   fetchMetaDescription={fetchMetaDescription}
-                  scanningState={scanningState}
+                  currentPhase={currentPhase !== "not_started"}
                   isFetchingMeta={isFetchingMeta}
                 />
 
@@ -84,11 +84,11 @@ export const OrganizationSetup = () => {
                 <CompanyDescriptionField
                   control={form.control}
                   isLoading={isLoading}
-                  scanningState={scanningState}
+                  currentPhase={currentPhase !== "not_started"}
                 />
               </div>
 
-              {scanningState !== "not_started" && (
+              {currentPhase !== "not_started" && (
                 <div className="space-y-4 md:space-y-6">
                   <Tabs defaultValue="progress" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
@@ -106,10 +106,11 @@ export const OrganizationSetup = () => {
                     <TabsContent value="progress" className="space-y-4">
                       <TrainingProgressAlert
                         scanProgress={scanProgress}
-                        scanningState={scanningState}
                         isComplete={isComplete}
                         completedPages={completedPages}
                         scannedPages={scannedPages}
+                        currentPhase={currentPhase}
+                        detectedPages={detectedPages}
                       />
                     </TabsContent>
 
@@ -131,18 +132,20 @@ export const OrganizationSetup = () => {
                     type="button"
                     variant="outline"
                     onClick={() => dispatch({ type: "SET_STEP", payload: 1 })}
-                    disabled={isLoading || scanningState === "scanning"}
+                    disabled={isLoading || currentPhase === "scanning"}
                     className="flex items-center gap-2"
                   >
                     <ChevronLeft className="h-4 w-4" /> Back
                   </Button>
 
-                  {scanningState !== "not_started" && (
+                  {currentPhase !== "not_started" && (
                     <Button
                       type="button"
                       variant="secondary"
                       onClick={resetDialog.openDialog}
-                      disabled={scanningState === "scanning"}
+                      disabled={["scanning", "processing", "training"].includes(
+                        currentPhase
+                      )}
                       className="flex items-center gap-2"
                     >
                       <RotateCcw className="h-4 w-4" /> Reset Training
@@ -150,7 +153,7 @@ export const OrganizationSetup = () => {
                   )}
                 </div>
 
-                {scanningState === "not_started" ? (
+                {currentPhase === "not_started" ? (
                   <Button
                     type="submit"
                     disabled={isLoading}
@@ -171,7 +174,7 @@ export const OrganizationSetup = () => {
                   <Button
                     type="button"
                     onClick={() => dispatch({ type: "SET_STEP", payload: 3 })}
-                    disabled={scanningState === "scanning"}
+                    disabled={currentPhase !== "completed"}
                     className="flex items-center gap-2"
                   >
                     Continue Setup <ChevronRight className="h-4 w-4" />

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Building2, Globe, Loader2, FileSearch, FileText } from "lucide-react";
 
-export const CompanyNameField = ({ control, isLoading, scanningState }) => (
+export const CompanyNameField = ({ control, isLoading, currentPhase }) => (
   <FormField
     control={control}
     name="companyName"
@@ -24,7 +24,7 @@ export const CompanyNameField = ({ control, isLoading, scanningState }) => (
           <Input
             placeholder="Enter your company name"
             {...field}
-            disabled={isLoading || scanningState === "scanning"}
+            disabled={isLoading || currentPhase === "scanning"}
           />
         </FormControl>
         <FormMessage />
@@ -36,7 +36,7 @@ export const CompanyNameField = ({ control, isLoading, scanningState }) => (
 export const CompanyURLField = ({
   control,
   isLoading,
-  scanningState,
+  currentPhase,
   fetchMetaDescription,
   isFetchingMeta,
 }) => (
@@ -54,14 +54,14 @@ export const CompanyURLField = ({
             <Input
               placeholder="https://your-company.com"
               {...field}
-              disabled={isLoading || scanningState === "scanning"}
+              disabled={isLoading || currentPhase === "scanning"}
               className="w-full"
             />
             <Button
               type="button"
               onClick={fetchMetaDescription}
               disabled={
-                isFetchingMeta || !field.value || scanningState === "scanning"
+                isFetchingMeta || !field.value || currentPhase === "scanning"
               }
               className="whitespace-nowrap"
             >
@@ -88,7 +88,7 @@ export const CompanyURLField = ({
 export const CompanyDescriptionField = ({
   control,
   isLoading,
-  scanningState,
+  currentPhase,
 }) => (
   <FormField
     control={control}
@@ -104,7 +104,7 @@ export const CompanyDescriptionField = ({
             placeholder="Enter company description or fetch from website"
             className="resize-none"
             {...field}
-            disabled={isLoading || scanningState === "scanning"}
+            disabled={isLoading || currentPhase === "scanning"}
           />
         </FormControl>
         <FormMessage />

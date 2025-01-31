@@ -5,7 +5,7 @@ import { userRegistrationSchema } from "../schemas/userRegistration";
 import { useRegistration } from "../contexts/RegistrationProvider";
 
 export const useRegistrationForm = () => {
-  const { dispatch } = useRegistration();
+  const { state, dispatch } = useRegistration();
   const [verificationSent, setVerificationSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isResendingCode, setIsResendingCode] = useState(false);
@@ -14,9 +14,9 @@ export const useRegistrationForm = () => {
   const form = useForm({
     resolver: zodResolver(userRegistrationSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      name: state.userData.name,
+      email: state.userData.email,
+      password: state.userData.password,
       verificationCode: "",
     },
     context: {

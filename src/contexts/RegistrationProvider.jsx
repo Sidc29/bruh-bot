@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer } from "react";
 import { registrationReducer } from "../reducers/registrationReducer";
 
 const initialState = {
-  currentStep: 3,
+  currentStep: 1,
   userData: {
     name: "",
     email: "",
@@ -10,9 +10,9 @@ const initialState = {
     isEmailVerified: false,
   },
   organizationData: {
-    companyName: "Test",
-    websiteUrl: "http://test.com",
-    description: "test",
+    companyName: "",
+    websiteUrl: "",
+    description: "",
     scrapedPages: [],
     trainingState: {
       currentPhase: "not_started", // not_started, scanning, processing, training, completed

@@ -111,6 +111,7 @@ BruhBot Team`);
           confettiShown: true,
         },
       });
+      dispatch({ type: "COMPLETE_ALL_STEPS" });
     }, 2000);
   };
 

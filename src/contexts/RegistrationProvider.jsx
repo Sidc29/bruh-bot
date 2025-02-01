@@ -3,6 +3,7 @@ import { registrationReducer } from "../reducers/registrationReducer";
 
 const initialState = {
   currentStep: 1,
+  allStepsCompleted: false,
   userData: {
     name: "",
     email: "",

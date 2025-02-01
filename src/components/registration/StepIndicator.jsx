@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function StepIndicator({ currentStep, steps }) {
+export function StepIndicator({ currentStep, allStepsCompleted, steps }) {
   return (
     <div className="mb-8">
       <div className="flex justify-between">
@@ -17,26 +17,30 @@ export function StepIndicator({ currentStep, steps }) {
               className={cn(
                 "flex flex-col items-center relative",
                 index < steps.length - 1 && "w-full",
-                currentStep < step.number && "opacity-50"
+                !allStepsCompleted && currentStep < step.number && "opacity-50"
               )}
             >
               {/* Step Circle */}
               <div
                 className={cn(
-                  "flex h-12 w-12 items-center justify-center rounded-full border-2 ",
-                  currentStep > step.number &&
+                  "flex h-12 w-12 items-center justify-center rounded-full border-2",
+                  (currentStep > step.number || allStepsCompleted) &&
                     "border-primary bg-primary text-primary-foreground",
                   currentStep === step.number &&
+                    !allStepsCompleted &&
                     "border-primary bg-primary/10 text-primary",
                   currentStep < step.number &&
+                    !allStepsCompleted &&
                     "border-muted-foreground/30 bg-muted/10 text-muted-foreground",
                   "text-base font-semibold",
-                  currentStep < step.number && "cursor-not-allowed"
+                  currentStep < step.number &&
+                    !allStepsCompleted &&
+                    "cursor-not-allowed"
                 )}
                 aria-current={currentStep === step.number ? "step" : undefined}
-                aria-disabled={currentStep < step.number}
+                aria-disabled={currentStep < step.number && !allStepsCompleted}
               >
-                {currentStep > step.number ? (
+                {currentStep > step.number || allStepsCompleted ? (
                   <Check className="h-6 w-6" strokeWidth={2.5} />
                 ) : (
                   step.number
@@ -48,9 +52,14 @@ export function StepIndicator({ currentStep, steps }) {
                 <span
                   className={cn(
                     "text-sm font-medium block leading-tight",
-                    currentStep > step.number && "text-primary",
-                    currentStep === step.number && "text-primary",
-                    currentStep < step.number && "text-muted-foreground/50"
+                    (currentStep > step.number || allStepsCompleted) &&
+                      "text-primary",
+                    currentStep === step.number &&
+                      !allStepsCompleted &&
+                      "text-primary",
+                    currentStep < step.number &&
+                      !allStepsCompleted &&
+                      "text-muted-foreground/50"
                   )}
                 >
                   {step.title}
@@ -59,7 +68,7 @@ export function StepIndicator({ currentStep, steps }) {
                   <span
                     className={cn(
                       "text-xs mt-0.5 block",
-                      currentStep < step.number
+                      currentStep < step.number && !allStepsCompleted
                         ? "text-muted-foreground/30"
                         : "text-muted-foreground"
                     )}
@@ -76,9 +85,14 @@ export function StepIndicator({ currentStep, steps }) {
                 <div
                   className={cn(
                     "absolute h-0.5 w-full top-6 -translate-y-1/2",
-                    currentStep > step.number && "bg-primary",
-                    currentStep === step.number && "bg-primary/30",
-                    currentStep < step.number && "bg-muted-foreground/20"
+                    (currentStep > step.number || allStepsCompleted) &&
+                      "bg-primary",
+                    currentStep === step.number &&
+                      !allStepsCompleted &&
+                      "bg-primary/30",
+                    currentStep < step.number &&
+                      !allStepsCompleted &&
+                      "bg-muted-foreground/20"
                   )}
                 />
               </div>

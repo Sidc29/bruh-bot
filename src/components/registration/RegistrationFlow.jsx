@@ -15,7 +15,11 @@ export function RegistrationFlow() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <StepIndicator currentStep={state.currentStep} steps={STEPS} />
+      <StepIndicator
+        currentStep={state.currentStep}
+        allStepsCompleted={state.allStepsCompleted}
+        steps={STEPS}
+      />
       <div className="space-y-8">
         {state.currentStep === 1 && <UserRegistration />}
         {state.currentStep === 2 && <OrganizationSetup />}

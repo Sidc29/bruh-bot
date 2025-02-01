@@ -5,10 +5,15 @@ import { origanizationDetailsSchema } from "../schemas/organizationDetails";
 import { useRegistration } from "../contexts/RegistrationProvider";
 import pagesData from "../data/pagesData";
 import useDialog from "./useDialog";
+import { useToast } from "../hooks/use-toast";
+
+const API_KEY = import.meta.env.VITE_LINK_PREVIEW_API_KEY;
 
 export function useOrganizationSetup() {
   const { state, dispatch } = useRegistration();
   const { trainingState } = state.organizationData;
+
+  const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingMeta, setIsFetchingMeta] = useState(false);
@@ -141,14 +146,47 @@ export function useOrganizationSetup() {
   };
 
   const fetchMetaDescription = async () => {
+    const websiteUrl = form.getValues("websiteUrl");
+    if (!websiteUrl) return;
+
     setIsFetchingMeta(true);
-    setTimeout(() => {
-      form.setValue("description", "Automatically fetched description...", {
-        shouldValidate: true,
-        shouldDirty: true,
+
+    try {
+      const response = await fetch(
+        `https://api.linkpreview.net/?key=${API_KEY}&q=${encodeURIComponent(
+          websiteUrl
+        )}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch metadata");
+      }
+
+      const data = await response.json();
+
+      if (data.description) {
+        form.setValue("description", data.description, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      } else {
+        toast({
+          title: "No description found",
+          description: "The website doesn't have a meta description available.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      // TODO: Show error toast or message
+      toast({
+        title: "Error fetching description",
+        description: "Unable to fetch website description. Please try again.",
+        variant: "destructive",
       });
+    } finally {
       setIsFetchingMeta(false);
-    }, 1500);
+    }
   };
 
   const form = useForm({

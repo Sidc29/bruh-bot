@@ -42,6 +42,16 @@ export function registrationReducer(state, action) {
           },
         },
       };
+    case "COMPLETE_ALL_STEPS":
+      return {
+        ...state,
+        allStepsCompleted: true,
+      };
+    case "RESET_COMPLETION":
+      return {
+        ...state,
+        allStepsCompleted: false,
+      };
     default:
       return state;
   }

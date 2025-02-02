@@ -28,9 +28,11 @@ export const useChatbotIntegration = () => {
 
   const handleTestChatbot = () => {
     const isLocalhost = import.meta.env.DEV;
+    const productionUrl = import.meta.env.VITE_APP_URL;
+
     const testUrl = isLocalhost
       ? `http://localhost:5173/chatbot?preview=true`
-      : `${state.organizationData.websiteUrl}/chatbot?preview=true`;
+      : `${productionUrl}/chatbot?preview=true`;
 
     window.open(testUrl, "_blank");
 
@@ -43,7 +45,6 @@ export const useChatbotIntegration = () => {
       },
     });
   };
-
   const handleCopyCode = () => {
     const integrationCode = `<!-- BruhBot Widget -->
 <script src="https://widget.bruhbot.com/loader.js" 

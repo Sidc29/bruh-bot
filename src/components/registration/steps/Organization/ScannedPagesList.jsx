@@ -10,12 +10,15 @@ export const ScannedPagesList = ({
 }) => {
   if (!scannedPages?.length) {
     return (
-      <Card className="h-[300px] flex items-center justify-center">
-        <div className="text-center p-4">
-          <FileSearch className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-          <h3 className="font-medium text-lg mb-1">No pages scanned yet</h3>
-          <p className="text-sm text-muted-foreground">
-            Scanned pages will appear here once they've been processed
+      <Card className="h-[300px] flex items-center justify-center bg-secondary/30">
+        <div className="text-center p-6">
+          <div className="relative mx-auto w-fit mb-4">
+            <div className="absolute inset-0 bg-secondary rounded-full animate-ping"></div>
+            <FileSearch className="h-12 w-12 text-muted-foreground relative" />
+          </div>
+          <h3 className="font-semibold text-lg mb-2">No pages scanned yet</h3>
+          <p className="text-sm text-muted-foreground max-w-[250px]">
+            Scanned pages will appear here as they're processed
           </p>
         </div>
       </Card>
@@ -23,53 +26,61 @@ export const ScannedPagesList = ({
   }
 
   return (
-    <ScrollArea className="h-[300px] rounded-lg border p-4">
-      <div className="grid gap-3">
+    <ScrollArea className="h-[300px] rounded-xl border bg-card shadow-sm">
+      <div className="p-4 grid gap-3">
         {scannedPages.map((page) => {
           const statusConfig = getStatusConfig(page.status);
 
           return (
-            <Card
+            <div
               key={page.url}
-              className={cn(
-                "transition-all",
-                statusConfig.borderColor,
-                statusConfig.containerBg,
-                statusConfig.hoverBg,
-                "cursor-pointer"
-              )}
+              className="group relative"
               onClick={() => {
                 setSelectedPage(page);
                 contentDialog.openDialog();
               }}
             >
-              <CardContent className="p-3 sm:p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0">
+              <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-12 bg-transparent group-hover:bg-primary rounded-full transition-all duration-300" />
+              <Card
+                className={cn(
+                  "transition-all duration-300",
+                  "border hover:border-primary",
+                  "hover:shadow-sm cursor-pointer",
+                  "bg-background hover:bg-secondary/40"
+                )}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-4">
                     <div
                       className={cn(
-                        "p-1.5 sm:p-2 rounded-full flex-shrink-0",
+                        "p-2 rounded-xl transition-all duration-300",
                         statusConfig.bgColor
                       )}
                     >
                       {statusConfig.icon}
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium truncate text-sm sm:text-base">
-                        {page.url}
-                      </p>
-                      <p className="text-xs sm:text-sm text-muted-foreground truncate">
-                        {page.chunks.length} content blocks analyzed
-                      </p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-medium truncate">{page.url}</p>
+                        <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-secondary hidden sm:inline-block">
+                          {statusConfig.label}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span>{page.chunks.length} content blocks</span>
+                        <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
+                      </div>
                     </div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                   </div>
-                  <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           );
         })}
       </div>
     </ScrollArea>
   );
 };
+
+export default ScannedPagesList;

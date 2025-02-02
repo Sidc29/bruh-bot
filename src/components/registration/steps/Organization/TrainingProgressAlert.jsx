@@ -1,28 +1,45 @@
-import { Loader2, CheckCircle2, Bot, Globe, Split, Brain } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Bot, Globe, Split, Brain, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { cn } from "../../../../lib/utils";
 
-const PhaseIndicator = ({ phase, icon: Icon, isActive, isComplete }) => (
+const PhaseIndicator = ({
+  phase,
+  icon: Icon,
+  isActive,
+  isComplete,
+  description,
+}) => (
   <div
     className={cn(
-      "flex items-center gap-2 p-2 rounded-lg transition-all",
-      isActive && "bg-primary/10",
+      "relative transition-all duration-300 ease-in-out",
+      "hover:bg-secondary/40 rounded-xl p-4",
+      isActive && "bg-secondary shadow-sm",
       isComplete && "text-primary"
     )}
   >
-    <div
-      className={cn(
-        "p-1.5 rounded-full",
-        isActive && "bg-primary/20",
-        isComplete && "bg-primary/20"
-      )}
-    >
-      <Icon className="h-4 w-4" />
+    <div className="flex items-center gap-3">
+      <div
+        className={cn(
+          "p-2 rounded-xl transition-all duration-300 bg-background",
+          isActive && "bg-primary text-white shadow-sm",
+          isComplete && "bg-primary text-white"
+        )}
+      >
+        <Icon className="h-5 w-5" />
+      </div>
+      <div className="flex-1">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold">{phase}</span>
+          {isComplete && (
+            <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto animate-in fade-in duration-300" />
+          )}
+        </div>
+        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+      </div>
     </div>
-    <span className="text-sm font-medium">{phase}</span>
-    {isComplete && <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto" />}
+    {isActive && (
+      <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-full animate-pulse" />
+    )}
   </div>
 );
 
@@ -34,154 +51,136 @@ export const TrainingProgressAlert = ({
   currentPhase,
   isComplete,
 }) => {
-  const getPhaseContent = () => {
-    switch (currentPhase) {
-      case "scanning":
-        return {
-          title: "Website Scanning",
-          description: "Detecting pages and analyzing website structure...",
-          progress: (
-            <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground/80">
-              <span className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Pages Detected</span>
-              </span>
-              <span className="font-medium">{detectedPages.length} pages</span>
-            </div>
-          ),
-        };
-      case "processing":
-        return {
-          title: "Content Processing",
-          description: "Analyzing and processing page content...",
-          progress: (
-            <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground/80">
-              <span className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Pages Processed</span>
-              </span>
-              <span className="font-medium">
-                {completedPages}/{scannedPages.length}
-              </span>
-            </div>
-          ),
-        };
-      case "training":
-        return {
-          title: "AI Model Training",
-          description: "Training your custom AI assistant on your content...",
-          progress: null,
-        };
-      case "completed":
-        return {
-          title: "Training Complete",
-          description: "Your AI assistant is ready to help your users",
-          progress: (
-            <div className="flex items-center justify-between gap-2 text-sm text-text-muted-foreground/80">
-              <span className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span>All Pages Processed</span>
-              </span>
-              <span className="font-medium">{scannedPages.length} pages</span>
-            </div>
-          ),
-        };
-      default:
-        return {
-          title: "Initializing",
-          description: "Preparing to start...",
-          progress: null,
-        };
-    }
+  const phases = {
+    scanning: {
+      title: "Website Scanning",
+      description: "Analyzing website structure and content hierarchy",
+      icon: Globe,
+      progressLabel: "Pages Detected",
+      progressValue: detectedPages?.length || 0,
+    },
+    processing: {
+      title: "Content Processing",
+      description: "Extracting and organizing relevant information",
+      icon: Split,
+      progressLabel: "Pages Processed",
+      progressValue: `${completedPages}/${scannedPages?.length || 0}`,
+    },
+    training: {
+      title: "AI Model Training",
+      description: "Fine-tuning the model with your content",
+      icon: Brain,
+      progressLabel: "Training Progress",
+      progressValue: "In Progress",
+    },
+    completed: {
+      title: "Your Chatbot is Ready!",
+      description:
+        "Training completed successfully. Your AI assistant is now ready to help.",
+      icon: Brain,
+      progressLabel: "Training Status",
+      progressValue: "Complete",
+    },
   };
 
-  const phaseContent = getPhaseContent();
+  const currentPhaseData = isComplete
+    ? phases.completed
+    : phases[currentPhase] || phases.scanning;
 
   return (
-    <Alert className="relative overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-      <div className="relative space-y-6">
-        <div className="flex items-center gap-4">
+    <div className="relative rounded-2xl overflow-hidden bg-card border shadow-sm p-6">
+      <div className="absolute top-0 left-0 w-full h-1 bg-secondary">
+        <div
+          className="h-full bg-primary transition-all duration-500 ease-out"
+          style={{ width: `${isComplete ? 100 : scanProgress}%` }}
+        />
+      </div>
+
+      <div className="space-y-8">
+        <div className="flex items-start gap-6">
           <div
             className={cn(
-              "relative p-3 bg-primary/10 rounded-full transition-transform duration-500",
-              currentPhase !== "completed" && "animate-[pulse_2s_infinite]"
+              "relative p-4 bg-secondary rounded-2xl",
+              !isComplete && "animate-pulse"
             )}
           >
-            <Bot className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+            <Bot className="h-8 w-8 text-primary" />
+            {!isComplete && (
+              <div className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-primary border-2 border-background animate-pulse" />
+            )}
           </div>
+
           <div className="flex-1 min-w-0">
-            <AlertTitle className="text-lg font-semibold mb-1">
-              {currentPhase !== "completed" ? (
-                <span className="inline-flex items-center gap-2">
-                  {phaseContent.title}
-                  <Badge variant="secondary" className="animate-pulse">
-                    Phase{" "}
-                    {currentPhase === "scanning"
-                      ? "1/3"
-                      : currentPhase === "processing"
-                      ? "2/3"
-                      : currentPhase === "training"
-                      ? "3/3"
-                      : ""}
-                  </Badge>
+            <AlertTitle className="text-2xl font-bold mb-2 flex items-center gap-3">
+              {currentPhaseData.title}
+              {!isComplete && (
+                <span className="text-sm font-normal px-3 py-1 rounded-full bg-secondary text-foreground">
+                  Phase{" "}
+                  {currentPhase === "scanning"
+                    ? "1/3"
+                    : currentPhase === "processing"
+                    ? "2/3"
+                    : "3/3"}
                 </span>
-              ) : (
-                phaseContent.title
               )}
             </AlertTitle>
-            <AlertDescription className="text-sm sm:text-base text-muted-foreground/90">
-              {phaseContent.description}
+            <AlertDescription className="text-base text-muted-foreground">
+              {currentPhaseData.description}
             </AlertDescription>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex flex-col gap-2">
-            <PhaseIndicator
-              phase="Website Scanning"
-              icon={Globe}
-              isActive={currentPhase === "scanning"}
-              isComplete={["processing", "training", "completed"].includes(
-                currentPhase
-              )}
-            />
-            <PhaseIndicator
-              phase="Content Processing"
-              icon={Split}
-              isActive={currentPhase === "processing"}
-              isComplete={["training", "completed"].includes(currentPhase)}
-            />
-            <PhaseIndicator
-              phase="AI Model Training"
-              icon={Brain}
-              isActive={currentPhase === "training"}
-              isComplete={currentPhase === "completed"}
-            />
-          </div>
+        <div className="space-y-2">
+          {Object.entries(phases)
+            .filter(([key]) => key !== "completed")
+            .map(([key, phase]) => (
+              <PhaseIndicator
+                key={key}
+                phase={phase.title}
+                icon={phase.icon}
+                description={phase.description}
+                isActive={currentPhase === key}
+                isComplete={
+                  isComplete ||
+                  (key === "scanning"
+                    ? ["processing", "training"].includes(currentPhase)
+                    : key === "processing"
+                    ? ["training"].includes(currentPhase)
+                    : false)
+                }
+              />
+            ))}
+        </div>
 
-          <div className="space-y-4 mt-4">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-sm sm:text-base font-medium text-muted-foreground">
-                Overall Progress
+        <div className="space-y-4 bg-secondary/50 p-4 rounded-xl">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">
+                {currentPhaseData.progressLabel}
               </span>
-              <Badge
-                variant={isComplete ? "default" : "secondary"}
-                className="px-3 py-1 text-sm font-medium"
-              >
-                {scanProgress}%
-              </Badge>
+              <div className="text-2xl font-bold">
+                {currentPhaseData.progressValue}
+              </div>
             </div>
-
-            <Progress
-              value={scanProgress}
-              className="h-2.5 sm:h-3 rounded-full bg-primary/20"
-            />
-
-            {phaseContent.progress}
+            <div className="text-right">
+              <div className="text-sm font-medium text-muted-foreground mb-1">
+                Overall Progress
+              </div>
+              <div className="text-2xl font-bold text-primary">
+                {isComplete ? "100" : scanProgress}%
+              </div>
+            </div>
           </div>
+
+          {!isComplete && currentPhase !== "completed" && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Processing...</span>
+            </div>
+          )}
         </div>
       </div>
-    </Alert>
+    </div>
   );
 };
 

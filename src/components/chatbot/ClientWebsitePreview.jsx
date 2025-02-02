@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { AlertCircle, X } from "lucide-react";
 import ChatbotWidget from "./ChatbotWidget";
+import { useRegistration } from "../../contexts/RegistrationProvider";
 
 export const ClientWebsitePreview = () => {
   const [showFeedback, setShowFeedback] = useState(true);

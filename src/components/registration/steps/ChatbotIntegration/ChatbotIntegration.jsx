@@ -78,6 +78,7 @@ export const ChatbotIntegration = () => {
             handleSocialShare={handleSocialShare}
             handleAdminPanelView={handleAdminPanelView}
             handleGoBackToMain={handleGoBackToMain}
+            handleTestChatbot={handleTestChatbot}
           />
         ) : showIntegrationSteps ? (
           <IntegrationOptions

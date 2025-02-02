@@ -11,7 +11,7 @@ const PhaseIndicator = ({
 }) => (
   <div
     className={cn(
-      "relative transition-all duration-300 ease-in-out",
+      "relative",
       "hover:bg-secondary/40 rounded-xl p-4",
       isActive && "bg-secondary shadow-sm",
       isComplete && "text-primary"
@@ -20,9 +20,9 @@ const PhaseIndicator = ({
     <div className="flex items-center gap-3">
       <div
         className={cn(
-          "p-2 rounded-xl transition-all duration-300 bg-background",
+          "p-2 rounded-xl bg-background",
           isActive && "bg-primary text-white shadow-sm",
-          isComplete && "bg-primary text-white"
+          isComplete && "bg-green-500/5 text-green-500"
         )}
       >
         <Icon className="h-5 w-5" />
@@ -31,7 +31,7 @@ const PhaseIndicator = ({
         <div className="flex items-center gap-2">
           <span className="font-semibold">{phase}</span>
           {isComplete && (
-            <CheckCircle2 className="h-4 w-4 text-green-500 ml-auto animate-in fade-in duration-300" />
+            <CheckCircle2 className="h-6 w-6 text-green-500 ml-auto animate-in fade-in duration-300" />
           )}
         </div>
         <p className="text-sm text-muted-foreground mt-1">{description}</p>
@@ -91,7 +91,7 @@ export const TrainingProgressAlert = ({
     <div className="relative rounded-2xl overflow-hidden bg-card border shadow-sm p-6">
       <div className="absolute top-0 left-0 w-full h-1 bg-secondary">
         <div
-          className="h-full bg-primary transition-all duration-500 ease-out"
+          className="h-full bg-primary"
           style={{ width: `${isComplete ? 100 : scanProgress}%` }}
         />
       </div>

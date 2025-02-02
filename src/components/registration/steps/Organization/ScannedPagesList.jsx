@@ -40,10 +40,9 @@ export const ScannedPagesList = ({
                 contentDialog.openDialog();
               }}
             >
-              <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-12 bg-transparent group-hover:bg-primary rounded-full transition-all duration-300" />
+              <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-12 bg-transparent group-hover:bg-primary rounded-full" />
               <Card
                 className={cn(
-                  "transition-all duration-300",
                   "border hover:border-primary",
                   "hover:shadow-sm cursor-pointer",
                   "bg-background hover:bg-secondary/40"
@@ -51,27 +50,19 @@ export const ScannedPagesList = ({
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
-                    <div
-                      className={cn(
-                        "p-2 rounded-xl transition-all duration-300",
-                        statusConfig.bgColor
-                      )}
-                    >
+                    <div className={cn("p-2 rounded-xl", statusConfig.bgColor)}>
                       {statusConfig.icon}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <p className="font-medium truncate">{page.url}</p>
-                        <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-secondary hidden sm:inline-block">
-                          {statusConfig.label}
-                        </span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>{page.chunks.length} content blocks</span>
                         <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
                       </div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-0.5" />
                   </div>
                 </CardContent>
               </Card>

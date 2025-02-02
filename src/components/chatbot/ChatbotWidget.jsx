@@ -65,7 +65,7 @@ const ChatbotWidget = () => {
       {isChatOpen && (
         <div
           className={cn(
-            "fixed right-4 shadow-2xl animate-in slide-in-from-bottom-2 z-50 transition-all duration-300",
+            "fixed right-4 shadow-2xl animate-in slide-in-from-bottom-2 z-50",
             isExpanded ? "bottom-20 sm:bottom-24" : "bottom-20",
             isExpanded
               ? "w-[95vw] sm:w-[400px] max-w-[400px]"

@@ -29,7 +29,7 @@ const FeatureCard = ({
     <Card
       onClick={onClick}
       className={cn(
-        "w-full p-6 transition-all duration-200 hover:scale-[1.02] cursor-pointer",
+        "w-full p-6 hover:scale-[1.02] cursor-pointer",
         variants[variant],
         "flex flex-col items-center justify-center space-y-4"
       )}

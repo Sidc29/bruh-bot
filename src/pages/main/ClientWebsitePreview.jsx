@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { AlertCircle, X } from "lucide-react";
-import ChatbotWidget from "./ChatbotWidget";
-import { useRegistration } from "../../contexts/RegistrationProvider";
+import ChatbotWidget from "../../components/chatbot/ChatbotWidget";
 
 export const ClientWebsitePreview = () => {
   const [showFeedback, setShowFeedback] = useState(true);

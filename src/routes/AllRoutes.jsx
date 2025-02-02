@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import RegisterPage from "../pages/main/Registration";
-import { ClientWebsitePreview } from "../components/chatbot/ClientWebsitePreview";
+import { ClientWebsitePreview } from "../pages/main/ClientWebsitePreview";
 
 export default function AllRoutes() {
   return (

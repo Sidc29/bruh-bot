@@ -1,11 +1,11 @@
-import RegisterPage from "./pages/main/Registration";
 import { Toaster } from "@/components/ui/toaster";
+import AllRoutes from "./routes/AllRoutes";
 
 function App() {
   return (
     <>
       <Toaster />
-      <RegisterPage />
+      <AllRoutes />
     </>
   );
 }

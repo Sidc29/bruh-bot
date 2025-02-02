@@ -38,7 +38,7 @@ export const pagesData = [
     status: "pending",
     chunks: [
       "<h2>Contact Us</h2>",
-      "<p>Reach out via email: <a href='mailto:support@example.com'>support@example.com</a></p>",
+      "<p>Reach out via email: <a href='mailto:support@bruhbot.com'>support@bruhbot.com</a></p>",
       "<p>Office locations: New York, London, Tokyo</p>",
       "<form><input type='text' placeholder='Your name' /><button>Submit</button></form>",
       "<!-- Captcha verification script -->",

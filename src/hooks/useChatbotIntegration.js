@@ -28,7 +28,11 @@ export const useChatbotIntegration = () => {
   }, [widgetId, dispatch, state.chatbotData.widgetId]);
 
   const handleTestChatbot = () => {
-    const testUrl = `${state.organizationData.websiteUrl}?chatbot=preview`;
+    const isLocalhost = import.meta.env.DEV;
+    const testUrl = isLocalhost
+      ? `http://localhost:5173/chatbot?preview=true`
+      : `${state.organizationData.websiteUrl}/chatbot?preview=true`;
+
     window.open(testUrl, "_blank");
 
     dispatch({

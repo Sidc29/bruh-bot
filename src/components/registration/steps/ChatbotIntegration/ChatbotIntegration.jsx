@@ -94,7 +94,7 @@ export const ChatbotIntegration = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <FeatureCard
                 icon={MessageSquare}
-                title="Test Chatbot"
+                title="Test chatbot"
                 description="Try out your chatbot in a simulated environment"
                 onClick={handleTestChatbot}
                 variant="chat"
@@ -102,7 +102,7 @@ export const ChatbotIntegration = () => {
 
               <FeatureCard
                 icon={Code}
-                title="Website Integration"
+                title="Integrate on your website"
                 description="Get the code to add the chatbot to your website"
                 onClick={() => setShowIntegrationSteps(true)}
                 variant="steps"
@@ -110,7 +110,7 @@ export const ChatbotIntegration = () => {
 
               <FeatureCard
                 icon={CheckCircle2}
-                title="Verify Integration"
+                title="Test Integration "
                 description="Confirm your chatbot is working correctly"
                 onClick={handleTestIntegration}
                 variant="test"

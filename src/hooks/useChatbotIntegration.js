@@ -6,7 +6,6 @@ import confetti from "canvas-confetti";
 export const useChatbotIntegration = () => {
   const [showIntegrationSteps, setShowIntegrationSteps] = useState(false);
   const [showTestingScreen, setShowTestingScreen] = useState(false);
-  const [integrationSuccess, setIntegrationSuccess] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const { state, dispatch } = useRegistration();
 
@@ -99,22 +98,72 @@ BruhBot Team`);
   };
 
   const handleTestIntegration = () => {
-    setShowTestingScreen(true);
-    setTimeout(() => {
-      setIntegrationSuccess(true);
-
-      if (!state.chatbotData.confettiShown) {
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      }
-
+    if (
+      !state.chatbotData.integrationStatus ||
+      state.chatbotData.integrationStatus === "failed"
+    ) {
+      setShowTestingScreen(true);
       dispatch({
         type: "UPDATE_CHATBOT_DATA",
         payload: {
+          integrationStatus: "checking",
+        },
+      });
+
+      const shouldFail = Math.random() < 0.3; // 30% chance of failure
+
+      setTimeout(() => {
+        if (shouldFail) {
+          dispatch({
+            type: "UPDATE_CHATBOT_DATA",
+            payload: {
+              integrationStatus: "failed",
+              isIntegrated: false,
+              isTestingComplete: true,
+            },
+          });
+        } else {
+          dispatch({
+            type: "UPDATE_CHATBOT_DATA",
+            payload: {
+              integrationStatus: "success",
+              isIntegrated: true,
+              isTestingComplete: true,
+              confettiShown: true,
+            },
+          });
+          if (!state.chatbotData.confettiShown) {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          }
+          dispatch({ type: "COMPLETE_ALL_STEPS" });
+        }
+      }, 2000);
+    } else {
+      setShowTestingScreen(true);
+    }
+  };
+
+  const handleRetryIntegration = () => {
+    dispatch({
+      type: "UPDATE_CHATBOT_DATA",
+      payload: {
+        integrationStatus: "checking",
+      },
+    });
+
+    setTimeout(() => {
+      dispatch({
+        type: "UPDATE_CHATBOT_DATA",
+        payload: {
+          integrationStatus: "success",
           isIntegrated: true,
           isTestingComplete: true,
           confettiShown: true,
         },
       });
+      if (!state.chatbotData.confettiShown) {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }
       dispatch({ type: "COMPLETE_ALL_STEPS" });
     }, 2000);
   };
@@ -131,7 +180,6 @@ BruhBot Team`);
     showIntegrationSteps,
     setShowIntegrationSteps,
     showTestingScreen,
-    integrationSuccess,
     isCopied,
     widgetId,
     handleTestChatbot,
@@ -139,5 +187,7 @@ BruhBot Team`);
     handleEmailInstructions,
     handleTestIntegration,
     handleGoBackToMain,
+    integrationStatus: state.chatbotData.integrationStatus,
+    handleRetryIntegration,
   };
 };

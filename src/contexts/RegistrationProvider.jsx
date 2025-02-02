@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer } from "react";
 import { registrationReducer } from "../reducers/registrationReducer";
 
 const initialState = {
@@ -28,6 +28,7 @@ const initialState = {
     widgetId: null,
     isIntegrated: false,
     isTestingComplete: false,
+    integrationStatus: null, // checking, success, failed
     integrationMethod: null,
     integrationCode: null,
     emailSent: false,

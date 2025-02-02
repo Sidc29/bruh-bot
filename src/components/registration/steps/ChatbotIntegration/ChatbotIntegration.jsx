@@ -49,7 +49,7 @@ export const ChatbotIntegration = () => {
     showIntegrationSteps,
     setShowIntegrationSteps,
     showTestingScreen,
-    integrationSuccess,
+    handleRetryIntegration,
     isCopied,
     widgetId,
     handleTestChatbot,
@@ -59,6 +59,7 @@ export const ChatbotIntegration = () => {
     handleGoBackToMain,
     handleSocialShare,
     handleAdminPanelView,
+    integrationStatus,
   } = useChatbotIntegration();
 
   return (
@@ -74,11 +75,12 @@ export const ChatbotIntegration = () => {
       <CardContent>
         {showTestingScreen ? (
           <TestingScreen
-            integrationSuccess={integrationSuccess}
+            integrationStatus={integrationStatus}
             handleSocialShare={handleSocialShare}
             handleAdminPanelView={handleAdminPanelView}
             handleGoBackToMain={handleGoBackToMain}
             handleTestChatbot={handleTestChatbot}
+            handleRetryIntegration={handleRetryIntegration}
           />
         ) : showIntegrationSteps ? (
           <IntegrationOptions
